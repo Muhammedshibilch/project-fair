@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import k4 from '../assets/k4.png';
-import { Form, FloatingLabel } from 'react-bootstrap'; 
+import { Form, FloatingLabel, Spinner } from 'react-bootstrap'; 
 import { Link, useNavigate } from 'react-router-dom';
-import { registerAPI } from '../services/allAPI';
+import { loginAPI, registerAPI } from '../services/allAPI';
+
 
 const Auth = ({insideRegister}) => {
+        const [isLogin,setIsLogin]=useState(false)
         const navigate = useNavigate()
         const [userInput,setUserInput]= useState({
           username:"",email:"",password:""
@@ -36,6 +38,41 @@ console.log(err);
     alert("Please fill the form completely!!!")
   }
 }
+
+const login = async(e)=>{
+  e.preventDefault()
+  if(userInput.password && userInput.email){
+// api call
+try{
+  const result = await loginAPI(userInput)
+  console.log(result);
+  
+  if(result.status==200){
+    sessionStorage.setItem("user",JSON.stringify(result.data.user))
+    sessionStorage.setItem("token",result.data.token)
+    setIsLogin(true)
+    setTimeout(()=>{
+      navigate("/")
+      setUserInput({username:"",email:"",password:""})
+      setIsLogin(false)
+    },2000);
+  }else{
+    if(result.response.status==404){
+      alert(result.response.data)
+    }
+  }
+}catch(err){
+  console.log(err);
+  
+}
+  }else{
+    alert("Please fill the form completely!!!")
+  }
+}
+
+
+
+
   return (
     <div style={{minHeight:'100vh', width:'100%'}} className='d-flex justify-content-center align-items-center'>
       <div className="container w-75">
@@ -77,7 +114,9 @@ console.log(err);
                         </div>
                       :
                       <div className="mt-3">
-                      <button  className='btn btn-primary mb-2'> Login</button>   
+                      <button onClick={login}  className='btn btn-primary mb-2 d-flex'> Login
+              { isLogin &&   <Spinner animation="border" variant="dark" className='ms-1' />}
+                        </button>   
                       <p>New User,please  click to <Link to={'/register'}>register</Link></p>
                       </div>
                     }

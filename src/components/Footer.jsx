@@ -8,7 +8,7 @@ const Footer = () => {
       {/* intro */}
       <div style={{ width: "400px" }}>
         <h5>
-        <i class="fa-brands fa-discord me-2"></i>
+        <i classname="fa-brands fa-discord me-2"></i>
           Project Fair
         </h5>
         <p>
