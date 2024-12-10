@@ -2,9 +2,10 @@ import React, { useContext, useEffect, useState } from 'react'
  import Add from '../components/Add'
  import Edit from '../components/Edit'
 import { userProjectsAPI } from '../services/allAPI'
-import { addProjectContext } from '../contexts/ContextShare'
+import { addProjectContext, editProjectContext } from '../contexts/ContextShare'
 
 const View = () => {
+  const {editProjectResponse,seteditProjectResponse}= useContext(editProjectContext)
   const {addProjectResponse,setAddProjectResponse}=useContext(addProjectContext)
 // create steps to store user projects
 const [userProjects,setUserProjects]=useState([])
@@ -12,7 +13,7 @@ console.log(userProjects);
 
 useEffect(()=>{
   getAllUserProjects()
-},[addProjectResponse])
+},[addProjectResponse,editProjectResponse])
 
     const getAllUserProjects = async()=>{
       const token = sessionStorage.getItem("token")
