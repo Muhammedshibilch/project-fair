@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
  import Add from '../components/Add'
  import Edit from '../components/Edit'
-import { userProjectsAPI } from '../services/allAPI'
+import { deleteProjectAPI, userProjectsAPI } from '../services/allAPI'
 import { addProjectContext, editProjectContext } from '../contexts/ContextShare'
 
 const View = () => {
@@ -34,6 +34,23 @@ useEffect(()=>{
     }
   }
 
+  const removeProject = async(id)=>{
+    const token = sessionStorage.getItem("token")
+    if(token){
+      const reqHeader = {
+        "Authorization": `Bearer ${token}`
+      }
+      try{
+        const result = await deleteProjectAPI(id,reqHeader)
+        if(result.status==200){
+          getAllUserProjects()
+        }
+      }catch(err){
+        console.log(err);
+        
+      }}
+  }
+
   return (
     <>
     <div className="d-flex justify-content-between mt-5" >
@@ -51,7 +68,7 @@ useEffect(()=>{
     <div className="d-flex align-items-center">
       <div> <Edit project={project}/> </div>
       <button className="btn"><a href={project?.github} target='_blank'><i className="fa-brands fa-github"></i></a></button>
-      <button className="btn"><i className="fa-solid fa-trash text-danger"></i></button>
+      <button onClick={()=>removeProject(project?._id)} className="btn"><i className="fa-solid fa-trash text-danger"></i></button>
     </div>
   </div>
    ))
